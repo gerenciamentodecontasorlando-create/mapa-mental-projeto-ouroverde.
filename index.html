@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projeto Amazônico — Reciclagem de Vidro e Construção Sustentável</title>
+  <style>
+    :root{
+      --bg:#071018;
+      --panel:#0b1622;
+      --panel2:#0f2032;
+      --text:#e8f0ff;
+      --muted:#a8c0df;
+      --accent:#39a9ff;
+      --accent2:#7c4dff;
+      --ok:#2ee59d;
+      --warn:#ffd166;
+      --danger:#ff5d6c;
+      --line:rgba(255,255,255,.10);
+      --shadow: 0 18px 45px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 10% 10%, rgba(57,169,255,.15), transparent 55%),
+        radial-gradient(900px 500px at 90% 30%, rgba(124,77,255,.13), transparent 55%),
+        radial-gradient(900px 600px at 50% 100%, rgba(46,229,157,.10), transparent 55%),
+        linear-gradient(180deg, #050b11, #071018 55%, #050b11);
+      overflow-x:hidden;
+    }
+
+    /* Top bar */
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(7,16,24,.68);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px 16px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width:240px;
+    }
+    .logo{
+      width:42px; height:42px;
+      border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(57,169,255,.95), rgba(57,169,255,.15) 55%, transparent 70%),
+        radial-gradient(circle at 70% 70%, rgba(124,77,255,.9), rgba(124,77,255,.12) 55%, transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    }
+    .brand h1{
+      margin:0; font-size:14px; letter-spacing:.7px;
+      text-transform:uppercase;
+      color:rgba(232,240,255,.92);
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size:12px; color:var(--muted);
+    }
+    .actions{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    button, .chip{
+      border:none;
+      cursor:pointer;
+      color:var(--text);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius: 14px;
+      transition:.2s ease;
+      font-weight:600;
+      letter-spacing:.2px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    button:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
+    .primary{
+      background: linear-gradient(135deg, rgba(57,169,255,.95), rgba(124,77,255,.85));
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .primary:hover{ filter:brightness(1.06); }
+    .ghost{ background: rgba(255,255,255,.04); }
+    .small{ padding:8px 10px; font-size:12px; border-radius: 12px; }
+
+    /* Layout */
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding: 18px 16px 70px;
+    }
+    .hero{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card .inner{ padding:16px; }
+    .title{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .title h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.4px;
+    }
+    .subtitle{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.35;
+      font-size:13px;
+    }
+    .pillrow{
+      margin-top:12px;
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .pill{
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.13);
+      background: rgba(255,255,255,.05);
+      color: rgba(232,240,255,.92);
+      display:inline-flex; gap:8px; align-items:center;
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:99px; background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(57,169,255,.16);
+    }
+    .dot.ok{ background: var(--ok); box-shadow: 0 0 0 3px rgba(46,229,157,.16); }
+    .dot.w{ background: var(--warn); box-shadow: 0 0 0 3px rgba(255,209,102,.16); }
+    .dot.p{ background: var(--accent2); box-shadow: 0 0 0 3px rgba(124,77,255,.16); }
+
+    /* Mind map */
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .mind{
+      padding:14px;
+    }
+    .centerNode{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.16);
+      background: radial-gradient(circle at 20% 20%, rgba(57,169,255,.18), transparent 60%),
+                  radial-gradient(circle at 80% 60%, rgba(124,77,255,.16), transparent 60%),
+                  rgba(11,22,34,.6);
+      padding:14px;
+      position:sticky;
+      top:86px;
+    }
+    .centerNode h3{
+      margin:0;
+      font-size:14px;
+      text-transform:uppercase;
+      letter-spacing:.8px;
+      color: rgba(232,240,255,.92);
+    }
+    .centerNode p{
+      margin:8px 0 0;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .centerNode .mini{
+      margin-top:12px;
+      display:grid; gap:10px;
+    }
+    .field label{
+      display:block;
+      font-size:11px;
+      color: rgba(168,192,223,.92);
+      margin:0 0 6px;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+    }
+    .field input, .field textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      outline:none;
+      font-size:13px;
+    }
+    .field textarea{ min-height:84px; resize:vertical; }
+
+    .steps{
+      display:grid;
+      gap:12px;
+    }
+    .step{
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      overflow:hidden;
+    }
+    .step header{
+      padding:12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      font-size:13px;
+    }
+    .num{
+      width:30px; height:30px; border-radius:10px;
+      display:grid; place-items:center;
+      background: rgba(57,169,255,.18);
+      border: 1px solid rgba(57,169,255,.35);
+      box-shadow: 0 8px 18px rgba(0,0,0,.25);
+    }
+    .tag{
+      font-size:11px; font-weight:700;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: rgba(232,240,255,.9);
+      white-space:nowrap;
+    }
+    .tag.green{ border-color: rgba(46,229,157,.25); background: rgba(46,229,157,.08); }
+    .tag.blue{ border-color: rgba(57,169,255,.25); background: rgba(57,169,255,.08); }
+    .tag.purple{ border-color: rgba(124,77,255,.25); background: rgba(124,77,255,.08); }
+    .tag.gold{ border-color: rgba(255,209,102,.25); background: rgba(255,209,102,.08); }
+
+    .step .content{
+      padding:12px;
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      display:grid;
+      gap:10px;
+    }
+    .bullets{
+      margin:0;
+      padding-left:18px;
+    }
+    .bullets li{ margin:4px 0; }
+    .editNote{
+      font-size:12px;
+      color: rgba(168,192,223,.95);
+      border:1px dashed rgba(255,255,255,.18);
+      background: rgba(255,255,255,.03);
+      padding:10px 12px;
+      border-radius: 14px;
+    }
+
+    /* Footer */
+    .footer{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      color: rgba(168,192,223,.9);
+      font-size:12px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:14px;
+    }
+
+    /* Print */
+    @media print {
+      body{
+        background:#fff !important;
+        color:#000 !important;
+      }
+      .topbar{ display:none !important; }
+      .card, .step, .centerNode{
+        box-shadow:none !important;
+        border:1px solid #ddd !important;
+        background:#fff !important;
+      }
+      .container{ padding:0 !important; max-width:100% !important; }
+      .hero{ grid-template-columns: 1fr !important; }
+      .grid{ grid-template-columns: 1fr !important; }
+      .centerNode{ position:static !important; top:auto !important; }
+      .subtitle, .step .content, .footer{ color:#333 !important; }
+      .tag, .pill{ border:1px solid #ddd !important; background:#f7f7f7 !important; color:#111 !important; }
+      .num{ background:#f3f6ff !important; border:1px solid #ccd9ff !important; }
+      a{ color:#000 !important; text-decoration:none !important; }
+    }
+
+    /* Mobile */
+    @media (max-width: 980px){
+      .hero{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .brand{ min-width:unset; }
+      .actions{ justify-content:flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Projeto Amazônico</h1>
+          <p>Reciclagem de Vidro e Construção Sustentável — mapa de execução</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="ghost small" onclick="toggleEditTips()">Mostrar/ocultar dicas</button>
+        <button class="ghost small" onclick="toggleCompact()">Modo compacto</button>
+        <button class="primary" onclick="window.print()">Imprimir / Salvar em PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+
+    <section class="hero">
+      <div class="card">
+        <div class="inner">
+          <div class="title">
+            <h2>Mapa Mental Executivo</h2>
+            <span class="chip">⚡ Plano em 14 etapas (do financiamento à expansão)</span>
+          </div>
+          <p class="subtitle">
+            Este documento organiza o projeto em fases, do ponto de partida (capital inicial) até a expansão para
+            pavimentação urbana, outros estados e diversificação com resíduos amazônicos (ex.: caroço de açaí).
+          </p>
+
+          <div class="pillrow">
+            <span class="pill"><span class="dot ok"></span> Econômico: reinvestimento + escala</span>
+            <span class="pill"><span class="dot"></span> Técnico: testes + conformidade</span>
+            <span class="pill"><span class="dot p"></span> Político: demonstração + licitação</span>
+            <span class="pill"><span class="dot w"></span> Ambiental: reciclagem + redução de descarte</span>
+          </div>
+
+          <div id="tips" class="editNote" style="margin-top:12px;">
+            ✍️ <b>Dica rápida:</b> você pode editar tudo direto no HTML. Se quiser, copie e cole para um editor (ex.: Notepad, VSCode).
+            Depois use <b>Imprimir/Salvar em PDF</b> para gerar o material de apresentação.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="inner">
+          <div class="title">
+            <h2>Resumo do Projeto</h2>
+            <span class="chip">🌱 Economia Circular Amazônica</span>
+          </div>
+          <p class="subtitle">
+            Transformar vidro descartado em insumo para a construção civil (calçadas e, futuramente, pavimentação), com
+            validação técnica, estratégia institucional e capacidade real de participação em licitações públicas.
+          </p>
+
+          <div class="pillrow">
+            <span class="pill"><span class="dot"></span> Vidro → insumo</span>
+            <span class="pill"><span class="dot ok"></span> Emprego + renda</span>
+            <span class="pill"><span class="dot p"></span> Modelo replicável</span>
+          </div>
+
+          <div id="tips2" class="editNote" style="margin-top:12px;">
+            ✅ <b>Você está fazendo certo:</b> primeiro estrutura (jurídico + técnico), depois prova (piloto), depois escala (licitação).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <!-- Left: center node + quick edit fields -->
+      <aside class="mind card">
+        <div class="inner">
+          <div class="centerNode">
+            <h3>Ponto central</h3>
+            <p><b>Financiamento Inicial Estratégico</b><br>(capital investidor ou linha de fomento)</p>
+
+            <div class="mini">
+              <div class="field">
+                <label>Nome do projeto</label>
+                <input id="projName" value="Projeto Amazônico — Reciclagem de Vidro e Construção Sustentável"/>
+              </div>
+              <div class="field">
+                <label>Município/Região (opcional)</label>
+                <input id="region" placeholder="Ex.: Abaetetuba/PA • Baixo Tocantins • Região Amazônica"/>
+              </div>
+              <div class="field">
+                <label>Objetivo em 1 frase</label>
+                <textarea id="oneLine">Implantar uma cadeia de coleta, beneficiamento e uso do vidro reciclado na construção civil, iniciando com calçamento e evoluindo para pavimentação urbana, com expansão regional e geração de empregos.</textarea>
+              </div>
+              <button class="primary" onclick="applyHeader()">Aplicar no cabeçalho</button>
+
+              <div id="tips3" class="editNote">
+                💡 <b>Atalho:</b> preencha os campos acima e clique em “Aplicar no cabeçalho” para atualizar o título e resumo.
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right: steps -->
+      <section class="steps">
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">1</span> Formação da equipe</div>
+            <span class="tag green">Estruturação</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li><b>Advogado:</b> estrutura societária, contratos, licitações.</li>
+              <li><b>Contador:</b> viabilidade, tributação, regularidade fiscal.</li>
+              <li><b>Marketing:</b> posicionamento institucional e divulgação.</li>
+              <li><b>Engenheiro:</b> viabilidade técnica, normas e especificações.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">2</span> Constituição da empresa</div>
+            <span class="tag green">Estruturação</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Abertura formal (provável <b>construtora</b> ou empresa de materiais sustentáveis).</li>
+              <li>Definição de CNAE, licenças e registros necessários.</li>
+              <li>Organização documental para futura participação em contratos públicos.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">3</span> Compra de equipamentos e estrutura</div>
+            <span class="tag blue">Operação</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Equipamentos para trituração e beneficiamento do vidro.</li>
+              <li>Estrutura física inicial (galpão/área de triagem/armazenamento).</li>
+              <li>Equipamentos de segurança e logística de transporte.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">4</span> Escolha do local adequado</div>
+            <span class="tag blue">Operação</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Área estratégica com acesso facilitado aos pontos de coleta.</li>
+              <li>Regularização ambiental e condições de expansão.</li>
+              <li>Conectividade logística para atender municípios próximos.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">5</span> Captação e tratamento do vidro</div>
+            <span class="tag gold">Produção</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Parcerias com comércios, cooperativas e prefeitura.</li>
+              <li>Coleta seletiva, triagem e beneficiamento.</li>
+              <li>Transformação em insumo para construção civil.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">6</span> Testagem técnica do produto</div>
+            <span class="tag gold">Produção</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Ensaios de resistência e durabilidade.</li>
+              <li>Avaliação estrutural e de acabamento.</li>
+              <li>Ajustes para conformidade com normas aplicáveis.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">7</span> Calçamento piloto</div>
+            <span class="tag purple">Aplicação</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Execução de obras pilotos (praças, escolas, pequenos trechos).</li>
+              <li>Registro fotográfico, controle de qualidade e relatório técnico.</li>
+              <li>Validação de desempenho e aceitação social.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">8</span> Demonstração para liderança política</div>
+            <span class="tag purple">Institucional</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Apresentação do piloto e dos resultados (impacto ambiental e econômico).</li>
+              <li>Alinhamento com secretarias e órgãos responsáveis.</li>
+              <li>Estratégia de apoio institucional e expansão municipal.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">9</span> Marketing e divulgação</div>
+            <span class="tag purple">Institucional</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Divulgação do impacto: redução de descarte + geração de empregos.</li>
+              <li>Portfólio com fotos, dados técnicos e benefícios.</li>
+              <li>Posicionamento como solução amazônica de economia circular.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">10</span> Preparação para licitação</div>
+            <span class="tag green">Governança</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Regularidade fiscal e certidões.</li>
+              <li>Comprovação técnica (pilotos, relatórios e capacidade operacional).</li>
+              <li>Organização de documentação e equipe para participação.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">11</span> Início de pequenas obras</div>
+            <span class="tag blue">Execução</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Execução gradual para consolidar experiência e portfólio.</li>
+              <li>Controle de custos e padronização do processo.</li>
+              <li>Geração de lucro e reputação local.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">12</span> Reinvestimento e expansão para outras cidades</div>
+            <span class="tag blue">Escala</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Ampliação de estrutura e produção.</li>
+              <li>Expansão regional em rede (municípios próximos).</li>
+              <li>Reforço logístico e aumento da captação de vidro.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">13</span> Expansão para pavimentação de ruas</div>
+            <span class="tag gold">Evolução</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Desenvolvimento técnico para escala maior.</li>
+              <li>Parcerias e contratos públicos mais robustos.</li>
+              <li>Consolidação como solução de infraestrutura urbana sustentável.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="step">
+          <header>
+            <div class="badge"><span class="num">14</span> Expansão para outros estados + diversificação</div>
+            <span class="tag purple">Futuro</span>
+          </header>
+          <div class="content">
+            <ul class="bullets">
+              <li>Replicação do modelo em outros estados (escala amazônica/nacional).</li>
+              <li>Diversificação: aproveitamento de <b>caroço de açaí</b> e outros resíduos.</li>
+              <li>Criação de novos produtos sustentáveis para construção civil.</li>
+            </ul>
+          </div>
+        </article>
+
+      </section>
+    </section>
+
+    <div class="footer">
+      <div>📌 Documento de organização interna e apresentação institucional (HTML → PDF).</div>
+      <div>⚙️ Dica: depois de ajustar, clique em <b>Imprimir/Salvar em PDF</b>.</div>
+    </div>
+
+  </main>
+
+  <script>
+    let compact = false;
+    function toggleEditTips(){
+      const ids = ["tips","tips2","tips3"];
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.style.display = (el.style.display === "none") ? "block" : "none";
+      });
+    }
+    function toggleCompact(){
+      compact = !compact;
+      document.querySelectorAll(".step .content").forEach(el=>{
+        el.style.display = compact ? "none" : "grid";
+      });
+    }
+    function applyHeader(){
+      const projName = document.getElementById("projName").value.trim();
+      const region = document.getElementById("region").value.trim();
+      const oneLine = document.getElementById("oneLine").value.trim();
+
+      // Update topbar brand title + subtitle
+      const h1 = document.querySelector(".brand h1");
+      const p = document.querySelector(".brand p");
+      h1.textContent = projName || "Projeto Amazônico";
+      p.textContent = (region ? (region + " — ") : "") + "mapa de execução";
+
+      // Update hero summary
+      const heroTitle = document.querySelector(".hero .card .title h2");
+      const heroSubtitle = document.querySelector(".hero .card .subtitle");
+      heroTitle.textContent = "Mapa Mental Executivo";
+      heroSubtitle.textContent = oneLine || heroSubtitle.textContent;
+    }
+  </script>
+
+</body>
+</html>
